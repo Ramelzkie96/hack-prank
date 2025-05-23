@@ -128,6 +128,9 @@
   ];
 
   let i = 0;
+  let skullCount = 0;
+  const maxSkulls = 50; // Limit to 50 skulls
+  let skullInterval;
 
   function typeLine() {
     if (i < lines.length) {
@@ -141,10 +144,8 @@
         terminal.scrollTop = terminal.scrollHeight;
 
         if (lines[i] === '1...') {
-          // Hide the main skull image
           skull.style.display = 'none';
-          // Start flooding the screen with skulls
-          loopSkullFlood();
+          loopSkullFlood(); // Start the skull animation loop
         }
 
         if (lines[i].includes("💥") || lines[i].includes("SYSTEM COMPROMISED")) {
@@ -196,7 +197,12 @@
   }
 
   function loopSkullFlood() {
-    setInterval(() => {
+    skullInterval = setInterval(() => {
+      if (skullCount >= maxSkulls) {
+        clearInterval(skullInterval); // Stop adding more skulls
+        return;
+      }
+
       const newSkull = document.createElement("img");
       newSkull.src = "skullss.png";
       newSkull.style.position = "fixed";
@@ -208,12 +214,19 @@
       newSkull.style.transform = "translate(-50%, -50%)";
       newSkull.style.animation = "glitchSkull 0.3s infinite, float 4s ease-in-out infinite";
 
+      // Automatically remove skull after 10 seconds
+      setTimeout(() => {
+        newSkull.remove();
+      }, 10000);
+
       document.body.appendChild(newSkull);
-    }, 150); // Add a new skull every 150ms
+      skullCount++;
+    }, 150); // Add a skull every 150ms
   }
 
   setTimeout(typeLine, 1000);
 </script>
+
 
 </body>
 </html>
